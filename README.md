@@ -65,7 +65,7 @@ A low voltage from a battery is applied to one of the running rails in the block
 
 When a train enters the block (right), the leading wheelset short circuits the current, which causes the relay to de-energize and drop the contact so that the signal lamp supply circuit now activates the red signal lamp. (PRC Rail Consulting Ltd, 2018)
 
-Click on the thumbnail below to see an animation of how the current flows:
+**Click on the thumbnail below to see an animation of how the current flows:**
 
 [![Signaling](images/utoob.png)](https://www.youtube.com/watch?v=ifT_EBRe4WI)
 

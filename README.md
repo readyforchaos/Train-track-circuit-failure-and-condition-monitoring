@@ -23,30 +23,30 @@ This case study goes through the process of how we set out to approach this prob
 
 Core  | Company | Role 
 ---------| ---- | --------- |
-Kosuke Fujimoto   | Microsoft CSE Japan | Software Engineer,
-Justin Bronder   | Microsoft California/US CSE | Software Engineer,
-Simon Jäger   | Microsoft CSE Nordics Sweden | Software Engineer,
-Alex Hocking   | Microsoft CSE UK | Software Engineer,
-Ville Rantala   | Microsoft CSE Nordics Finland | Software Engineer,
+Kosuke Fujimoto   | Microsoft CSE Japan | Software Engineer
+Justin Bronder   | Microsoft California/US CSE | Software Engineer
+Simon Jäger   | Microsoft CSE Nordics Sweden | Software Engineer
+Alex Hocking   | Microsoft CSE UK | Software Engineer
+Ville Rantala   | Microsoft CSE Nordics Finland | Software Engineer
 Anders Gill   | Microsoft CSE Nordics Norway | Software Engineer
 
 Support  | Company | Role 
 ---------| ---- | --------- |
-Patrik Larsson   | BearingPoint  | Applied ML,
-Vebjørn Axelsen   | BearingPoint  | Applied ML,
-David Giard    | Microsoft Chicago/US  | Software Engineer,
-Asu Deniz   | Microsoft Norway  | Data & AI advisor,
-Hanne Wulff   | Microsoft CSE Nordics Norway  | Program Manager,
-Warrell Harries   | Voestalpine  | Application Development Manager,
+Patrik Larsson   | BearingPoint  | Applied ML
+Vebjørn Axelsen   | BearingPoint  | Applied ML
+David Giard    | Microsoft Chicago/US  | Software Engineer
+Asu Deniz   | Microsoft Norway  | Data & AI advisor
+Hanne Wulff   | Microsoft CSE Nordics Norway  | Program Manager
+Warrell Harries   | Voestalpine  | Application Development Manager
 
 Local  | Company | Role 
 ---------| ---- | --------- |
-Adis Delalic   | Bane NOR  | IT Architect,
-Jørgen Torgerse   | Bane NOR  | Point Machine Condition Monitoring,
-Dag Mattis Pettersen   | Bane NOR  | Track Circuits Condition Monitoring,
-Kristine Tveit   | Bane NOR  | Analysis Condition Monitoring,
-Johanne Norstein Klungre   | Bane NOR  | Engineer Applied Mathematics,
-Aslak Wøllo Flaate   | Bane NOR  | Economist,
+Adis Delalic   | Bane NOR  | IT Architect
+Jørgen Torgerse   | Bane NOR  | Point Machine Condition Monitoring
+Dag Mattis Pettersen   | Bane NOR  | Track Circuits Condition Monitoring
+Kristine Tveit   | Bane NOR  | Analysis Condition Monitoring
+Johanne Norstein Klungre   | Bane NOR  | Engineer Applied Mathematics
+Aslak Wøllo Flaate   | Bane NOR  | Economist
 Anna Gjerstad   | Bane NOR  | Project Manager Smart Maintenance
 
 ## Track circuit
@@ -261,7 +261,7 @@ To process all of the data much faster, we leveraged a machine labeling approach
 
 > Full paper on the method used is available here: [https://github.com/simonjaeger/ml-papers/blob/master/signal_sequence_anomaly.md](https://github.com/simonjaeger/ml-papers/blob/master/signal_sequence_anomaly.md)
 
-### Upsample
+##### Upsample
 
 To produce accurate statistical measures and clustering, use continuous signal data. 
 
@@ -277,7 +277,7 @@ For new systems, store signal data at full resolution in cold storage. Upsamplin
 
 This step is not required if the samples in the signal data already have a uniform distribution. 
 
-#### Code
+##### Code
 
 To upsample the signal data, consider the first and second row of signal data. Extend the signal data between the first timestamp and the second timestamp. Use the measured value from the first row and create new rows. 
 
@@ -346,7 +346,7 @@ df['Timestamp'] = df['Timestamp'].dt.round('s')
 df.sort_values('Timestamp', inplace=True)
 ```
 
-### Cluster
+##### Cluster
 
 To categorize the signal data, perform a one-dimensional clustering. This helps to compute the labels and reason about sequences in the signal data. 
 
@@ -364,7 +364,7 @@ The method associates the labels with the clusters (centroids).
 
 If the signal data does not cluster well, identify a different strategy to separate it.
 
-#### Code
+##### Code
 
 The method applies a k-means clustering algorithm on the signal data. K-means clustering is fast (varying with implementations) and works well for large data sets. Substitute the k-means algorithm with a different algorithm, should it be more suitable. 
 
@@ -415,7 +415,7 @@ def cluster1d(df, value_column, label_column, ordered_labels):
     return df, np.array(sorted_cluster_centers)[:,0]
 ```
 
-### Quantize
+##### Quantize
 
 To reason about sections of the signal data, compute sequences (i.e. quantization). Use the sequences to explore the statistical measures between time ranges. Furthermore, extend the exploration to consecutive sequences.
 
@@ -433,7 +433,7 @@ Should the conditions of a hypothesis apply, refer to the original signal data.
 
 The task of forming hypotheses relies on domain expertise. This drives the identification of statistical metrics to compute for the sequences. Create a feedback loop to provide detected anomalies to domain experts. Use the feedback loop to evolve the hypothesis in an iterative process.
 
-#### Error
+##### Error
 
 Explore the quantization error to find anomalies, as extra data points. It explains the relationship between the original signal data and the cluster centroids. A useful insight into how the sequence behaves in the overall data set.
 
@@ -443,7 +443,7 @@ Explore the quantization error to find anomalies, as extra data points. It expla
 
 To compute an accurate quantization error, use upsampled signal data.
 
-#### Code
+##### Code
 
 To compute the sequences, use clustered signal data. Find consecutive signal data with identical labels. Save the consecutive signal data temporary.
 
@@ -545,7 +545,7 @@ def quantize_error(df, value_column, cluster_centers):
     return [min(abs(cluster_centers - value)) for value in df[value_column].values]
 ```
 
-### Examples
+##### Examples
 
 Provided are two basic examples to show the usage of the output of the method (sequences). They use utility functions to visualize time ranges within the signal data. 
 
@@ -561,9 +561,7 @@ clustered_df, cluster_centers = cluster1d(upsampled_df, 'Measurement', 'Label', 
 quantized_df = quantize(clustered_df, 'Timestamp', 'Measurement', 'Label', 'Length', [np.min, np.max, np.mean, np.std], ['Min', 'Max', 'Mean', 'SD'])
 ```
 
-#### Examples
-
-#### Anomaly 1: Volatile sequence
+##### Anomaly 1: Volatile sequence
 
 Regard sequences with the label high. Compute the standard deviation of the sequence standard deviations (measured values within sequences). 
 
@@ -585,7 +583,7 @@ plot(upsampled_df, quantized_df, labels, cluster_centers, start, end)
 
 *Figure 3: Quantized signal data and quantization error of anomaly. Anomaly identified by volatile measured values in the signal data.*
 
-#### Anomaly 2: Long sequence
+##### Anomaly 2: Long sequence
 
 Regard sequences with the label high. Compute the standard deviation of the sequence lengths. 
 

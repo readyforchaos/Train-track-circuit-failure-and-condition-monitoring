@@ -259,7 +259,7 @@ Two desired overall outcomes for functionality was focused on:
 
 To process all of the data much faster, we leveraged a machine labeling approach. This helped us go through the entire data set, and flag interesting sections. These sections could then be provided as potential anomalies for Bane NOR to further investigate. 
 
-> Full paper about the method used is available here:[https://github.com/simonjaeger/ml-papers/blob/master/signal_sequence_anomaly.md](https://github.com/simonjaeger/ml-papers/blob/master/signal_sequence_anomaly.md)
+> Full paper about the method used is available here: [https://github.com/simonjaeger/ml-papers/blob/master/signal_sequence_anomaly.md](https://github.com/simonjaeger/ml-papers/blob/master/signal_sequence_anomaly.md)
 
 ##### Upsample
 
